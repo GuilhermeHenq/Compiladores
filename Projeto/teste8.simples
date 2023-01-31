@@ -1,0 +1,15 @@
+programa testaTipos
+    inteiro a b c
+    logico x y z
+inicio
+    x <- V
+    a <- 12
+    se a > 1
+        entao escreva a 
+        senao escreva b 
+    fimse
+    enquanto a*3 > 40 faca
+        escreva a
+        a <- a - 1
+    fimenquanto   
+fimprograma
