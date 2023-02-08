@@ -8,6 +8,13 @@
 int contaVar;
 int rotulo = 0;
 int tipo;
+
+int localVar;
+int posParametro;
+int escAtivo;
+int dslParametro;
+int funcoesQuantidade;
+
 %}
 
 %token T_PROGRAMA
@@ -46,6 +53,8 @@ int tipo;
 %token T_NUMERO
 
 %start programa 
+%expect 1
+
 
 %left T_E T_OU 
 %left T_IGUAL 
@@ -127,10 +136,32 @@ lista_variaveis
 funcoes
     :
     | funcao funcoes
+    {
+        // contavar == ...
+
+    // fprintf(yyout...)
+
+
+
+    }
     ;
 
 funcao 
-    : T_FUNC tipo T_IDENTIF T_ABRE parametros T_FECHA
+    : T_FUNC tipo T_IDENTIF 
+    {
+    strcpy(elemTab.id, atoma);
+    elemTab.tip = tipo;
+    elemTab.cat = 'f';
+   // elemTab.esc = 'esc';
+    elemTab.rot = ++rotulo;
+    insereSimbolo(elemTab);
+
+    // buscaRot = buscaSimbolo.elemTab id;
+
+    // fprintf(yyout,"L%d\t ENSP\n", rotulo);
+
+    }
+    T_ABRE parametros T_FECHA // ROTINA PARA AJUSTAR PARAMETROS
       variaveis T_INICIO lista_comandos T_FIMFUNC
     ;
 
@@ -294,6 +325,12 @@ expressao
     | termo 
     ;
 
+//termo : identificador chamada
+//    | T_NUMERO
+//    :
+//    ;
+
+
 identificador
     : T_IDENTIF
     ;
@@ -302,7 +339,9 @@ identificador
 // A funcao eh chamada como um termo numa expressao
 chamada
     : // sem parametros eh uma variavel
-    | T_ABRE lista_argumentos T_FECHA
+    | T_ABRE 
+    {fprintf(yyout, "\tAMEM\t%d\n", tabSimb[pos].end);}
+    lista_argumentos T_FECHA
     ;
 
 lista_argumentos

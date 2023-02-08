@@ -69,7 +69,7 @@ void mostraTabela () {
     for(int i = 0; i < 50; i++) 
         printf(".");
     for(int i = 0; i < posTab; i++)
-        printf("\n%30s | %3d | %s\n", tabSimb[i].id, tabSimb[i].end, tabSimb[i].tip == INT ? "INT" : "LOG");
+        printf("\n%30s | %6d | %s\n", tabSimb[i].id, tabSimb[i].end, tabSimb[i].tip == INT ? "INT" : "LOG");
     printf("\n");
 }
 
