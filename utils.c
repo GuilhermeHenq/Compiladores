@@ -1,4 +1,8 @@
 #include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 
 #define TAM_TAB 100
 #define MAX_PAR 20
@@ -8,6 +12,8 @@ enum {INT, LOG};
 int desempilha(char);
 void empilha(int, char);
 void mostrapilha();
+void limparTabela();
+void arrumarPam(int, int);
 
 struct elemTabSimbolos {
     char id[100];
@@ -26,6 +32,19 @@ void maiscula (char *s) {
     for(int i = 0; s[i]; i++)
         s[i] = toupper(s[i]);
 }
+///////////////////////////////////////////////////////////////////////////
+void limparTabela()
+{
+  for (int i = 0; i < posTab; i++){
+      if (tabSimb[i].esc == 'L' && tabSimb[i].cat == 'v'){
+          for(int j = i; j < posTab - 1; j++){
+            tabSimb[j] = tabSimb[j + 1];
+          }
+          posTab--;
+          i--;
+      }
+  }
+}  
 ///////////////////////////////////////////////////////////////////////////
 char * format_params(struct elemTabSimbolos elem)
 {
@@ -53,19 +72,27 @@ char * format_params(struct elemTabSimbolos elem)
   free(formatted_params);
 }
 ///////////////////////////////////////////////////////////////////////////
+void arrumarPam(int pos, int npa){
+    tabSimb[pos].npa = npa;
+    tabSimb[pos].end = (-3) - npa;
+    for(int i = 1; i <= npa; i++){
+      tabSimb[pos+i].end = ((-3) - npa) + i;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////
 void updateParams(int count) {
   for (int i = TAM_TAB - 1; i >= 0; i--) {
     if (tabSimb[i].cat == 'f') {
       int params = count;
       tabSimb[i].npa = params;
       tabSimb[i].end = -3 - params;
-
       for (int j = 0; j < params; j++) {
         int idx = i + j + 1;
         tabSimb[idx].end = tabSimb[i].end + j + 1;
         tabSimb[idx].rot = 0;
-        tabSimb[i].par[j] = tabSimb[idx].tip;
-      }
+        //tabSimb[i].par[j] = tabSimb[idx].tip;
+      } 
     } 
   }
 }
@@ -117,7 +144,7 @@ void mostraTabela () {
     puts("---------------------------------------------------------------------------------------------------");
     puts("                                       Tabela de Simbolos");
     puts("---------------------------------------------------------------------------------------------------");
-    printf("\n%30s | %s | %s | %s | %s | %s | %s | %s \n", "ID", "END", "TIP", "ESC", "ROT", "CAT", "PAR", "NPAR");
+    printf("\n%30s | %s | %s | %s | %s | %s | %s | %s \n", "ID", "END", "TIP", "ESC", "ROT", "CAT", "NPAR", "PAR");
     for(int i = 0; i < 100; i++) 
         printf(".");
     for(int i = 0; i < posTab; i++)

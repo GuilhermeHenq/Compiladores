@@ -6,7 +6,6 @@
 #include "utils.c"
 
 int contaVar;
-int contaFunc;
 int numeroPar;
 int rotulo = 0;
 int tipo;
@@ -15,11 +14,8 @@ char escopo = 'G';
 // quantidade de variaveis locais de cada funcao
 int contaVarLoc;
 
-// pos que vai se inserir os parametros
-int posParametro = -1;
-
-// deslocamento de parametros
-//int dslParametro = -3;
+// a posicao de endereco da funcao vai ser guardada aqui, inicializa -1 para nao ter erro de comecar com 0 e o endereco ser 0
+int posFuncao = -1;
 
 //quantidade de funcoes do programa
 int funcoesQuantidade;
@@ -89,6 +85,7 @@ programa
         }
 
     // acrescentar as funções
+    // rotinas é uma rotina feita pelo Luiz para chamar as funcoes
        rotinas
        T_INICIO lista_comandos T_FIM
         { 
@@ -182,19 +179,21 @@ funcao
     fprintf(yyout,"L%d\tENSP\n", rotulo);
     contaVar++;
 
-    
-    posParametro = buscaSimbolo(elemTab.id);  
+    // guarda o endereco da funcao na variavel posFuncao
+    posFuncao = buscaSimbolo(elemTab.id);  
 
 
     }
     T_ABRE parametros T_FECHA 
         // ROTINA PARA AJUSTAR PARAMETROS
        {
-            updateParams(numeroPar);
+            arrumarPam(posFuncao, numeroPar);
+            //updateParams(numeroPar);
        }
     variaveis {
         // ROTINA AJUSTAR VARIAVEIS LOCAIS RET
         //empilha(contaVarLoc, 'n');
+        // verifica se há variaveis locais e as armazena gerando um AMEM
         if(contaVarLoc)
             fprintf(yyout,"\tAMEM\t%d\n", contaVarLoc);
     }
@@ -204,8 +203,17 @@ funcao
     
      lista_comandos T_FIMFUNC
     { 
-        posParametro = -1;
+        /* if(retorno == 0)
+            yyerror("A função precisa de retorno"); */
+        
+        //limpa tabela tirando as variaveis locais
+        limparTabela();
+
+        // posFuncao volta ao seu valor original visto que acabou a funcao
+        posFuncao = -1;
+        // escopo volta a ser global
         escopo = 'G';
+        // soma-se 1 na quantidade de funcoes do programa
         funcoesQuantidade++;  
 
     }
@@ -226,6 +234,7 @@ parametro
         elemTab.cat = 'p';
         elemTab.rot = 0;
         insereSimbolo(elemTab);
+        // armazena +1 na variavel de numero de parametros
         numeroPar++;
     }
     ;
@@ -248,17 +257,26 @@ retorno
     : T_RETORNE //{mostrapilha();} 
     expressao
     {
+
+    // se a posFuncao esta com valor padrao, nao existe endereco de funcao
+    // logo nao existe funcao, e o retorno foi chamado na main    
+    if(posFuncao == -1){
+        yyerror("Retorno chamado na main!");
+    }
+
     //mostrapilha();
-    int ret = desempilha('t');
-    int tipo = tabSimb[posParametro].tip;
-    if (ret != tipo){
+    int tipo2 = desempilha('t');
+    int tipo = tabSimb[posFuncao].tip;
+    if (tipo2 != tipo){
         yyerror("incompatibilidade de tipo a variavel");
     }
-    fprintf(yyout,"\tARZL\t%d\n", tabSimb[posParametro].end);
+    fprintf(yyout,"\tARZL\t%d\n", tabSimb[posFuncao].end);
+    // verifica se há variaveis locais e desaloca memória
     if (contaVarLoc){
         fprintf(yyout,"\tDMEM\t%d\n", contaVarLoc);
-    }  
-    fprintf(yyout,"\tRTSP\t%d\n", tabSimb[posParametro].npa);
+    }
+    // desaloca memoria com o numero de parametros da func
+    fprintf(yyout,"\tRTSP\t%d\n", tabSimb[posFuncao].npa);
     
     }
     // deve gerar (depois da traducao)
