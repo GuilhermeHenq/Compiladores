@@ -5,8 +5,9 @@
 
 enum {INT, LOG};
 
-int desempilha();
-void empilha(int valor);
+int desempilha(char);
+void empilha(int, char);
+void mostrapilha();
 
 struct elemTabSimbolos {
     char id[100];
@@ -25,7 +26,50 @@ void maiscula (char *s) {
     for(int i = 0; s[i]; i++)
         s[i] = toupper(s[i]);
 }
+///////////////////////////////////////////////////////////////////////////
+char * format_params(struct elemTabSimbolos elem)
+{
+  char *formatted_params = malloc(50);
+  if (elem.par[0] != 0 && elem.par[0] != 1) {
+    strcpy(formatted_params, "   0");
+  } else {
+    for (int i = 0; i < elem.npa; i++) {
+      switch (elem.par[i]) {
+        case 0:
+          strcat(formatted_params, "|INT|");
+          break;
+        case 1:
+          strcat(formatted_params, "|LOG|");
+          break;
+        default:
+          break;
+      }
+      if (i < elem.npa - 1) {
+        strcat(formatted_params, " -> ");
+      }
+    }
+  }
+  return formatted_params;
+  free(formatted_params);
+}
+///////////////////////////////////////////////////////////////////////////
+void updateParams(int count) {
+  for (int i = TAM_TAB - 1; i >= 0; i--) {
+    if (tabSimb[i].cat == 'f') {
+      int params = count;
+      tabSimb[i].npa = params;
+      tabSimb[i].end = -3 - params;
 
+      for (int j = 0; j < params; j++) {
+        int idx = i + j + 1;
+        tabSimb[idx].end = tabSimb[i].end + j + 1;
+        tabSimb[idx].rot = 0;
+        tabSimb[i].par[j] = tabSimb[idx].tip;
+      }
+    } 
+  }
+}
+///////////////////////////////////////////////////////////////////////////
 int buscaSimbolo(char *id)
 {
     int i;
@@ -39,6 +83,7 @@ int buscaSimbolo(char *id)
     }
     return i;
 }
+///////////////////////////////////////////////////////////////////////////
 void insereSimbolo (struct elemTabSimbolos elem) {
     int i; 
     //maiscula(elem.id);
@@ -62,39 +107,71 @@ void insereSimbolo (struct elemTabSimbolos elem) {
 // Modificar a rotina mostratabela para apresentar os outros campos
 // (esc, rot, cat, ...) da tabela.
 
+//void imprimirVetor (struct elemTabSimbolos elem)
+//{
+//    for(int i = 0; i < tabSimb[i].npa; i++) 
+//    printf("[%d] -> [%d]")
+//}
+///////////////////////////////////////////////////////////////////////////
 void mostraTabela () {
-    puts("Tabela de Simbolos");
-    puts("------------------");
-    printf("\n%30s | %s | %s \n", "ID", "END", "TIP");
-    for(int i = 0; i < 50; i++) 
+    puts("---------------------------------------------------------------------------------------------------");
+    puts("                                       Tabela de Simbolos");
+    puts("---------------------------------------------------------------------------------------------------");
+    printf("\n%30s | %s | %s | %s | %s | %s | %s | %s \n", "ID", "END", "TIP", "ESC", "ROT", "CAT", "PAR", "NPAR");
+    for(int i = 0; i < 100; i++) 
         printf(".");
     for(int i = 0; i < posTab; i++)
-        printf("\n%30s | %6d | %s\n", tabSimb[i].id, tabSimb[i].end, tabSimb[i].tip == INT ? "INT" : "LOG");
+        printf("\n%30s | %3d | %s | %2c | %3d | %3c | %3d \n", tabSimb[i].id, tabSimb[i].end, tabSimb[i].tip == INT ? "INT" : "LOG", tabSimb[i].esc
+        , tabSimb[i].rot, tabSimb[i].cat, tabSimb[i].npa);
     printf("\n");
 }
-
+///////////////////////////////////////////////////////////////////////////
 void testaTipo(int tipo1, int tipo2, int ret){
-    int t1 = desempilha();
-    int t2 = desempilha();
+    int t1 = desempilha('t');
+    int t2 = desempilha('t');
     if(t1 != tipo1 || t2 != tipo2) yyerror("Incompatibilidade de tipo!");
-    empilha(ret);
+    empilha(ret, 't');
 }
 
 // estrutura da pilha semantica
 // usada para enderecos, variaveis, rotulos
-
+///////////////////////////////////////////////////////////////////////////
 #define TAM_PIL 100
-int pilha[TAM_PIL];
-int topo = -1;
+struct {
+    int valor;
+    char tipo; // "r" = rotulo, "n" = nvars, "t" = tipo, "p" = posicaoTabSimb
+}pilha[TAM_PIL];
 
-void empilha (int valor) {
+int topo = -1;
+///////////////////////////////////////////////////////////////////////////
+void empilha (int valor, char tipo) {
     if (topo == TAM_PIL)
         yyerror("Pilha semântica cheia");
-    pilha[++topo] = valor;
+    pilha[++topo].valor = valor;
+    pilha[topo].tipo = tipo;
 }
-
-int desempilha() {
+///////////////////////////////////////////////////////////////////////////
+int desempilha(char tipo) {
     if (topo == -1)
         yyerror("Pilha semântica vazia");
-    return pilha[topo--];
+    if(pilha[topo].tipo != tipo) {
+        char msg[100];
+        sprintf(msg, "Desempilha espera [%c] e encontrou[%c]", tipo, pilha[topo].tipo);
+        yyerror(msg);
+    }
+  
+    return pilha[topo--].valor;
 }
+///////////////////////////////////////////////////////////////////////////
+void mostrapilha()
+{
+    int i = topo;
+    printf("Pilha = [");
+    while (i >= 0)
+    {
+        printf("(%d, %c)", pilha[i].valor, pilha[i].tipo);
+        i--;
+    }
+    printf("]\n");
+}
+///////////////////////////////////////////////////////////////////////////

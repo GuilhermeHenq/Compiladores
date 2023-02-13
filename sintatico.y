@@ -6,13 +6,22 @@
 #include "utils.c"
 
 int contaVar;
+int contaFunc;
+int numeroPar;
 int rotulo = 0;
 int tipo;
+char escopo = 'G';
 
-int localVar;
-int posParametro;
-int escAtivo;
-int dslParametro;
+// quantidade de variaveis locais de cada funcao
+int contaVarLoc;
+
+// pos que vai se inserir os parametros
+int posParametro = -1;
+
+// deslocamento de parametros
+//int dslParametro = -3;
+
+//quantidade de funcoes do programa
 int funcoesQuantidade;
 
 %}
@@ -67,25 +76,28 @@ int funcoesQuantidade;
 
 programa 
     : cabecalho 
-        { contaVar = 0; }
+        { 
+        contaVar = 0; 
+        escopo = 'G';
+        }
     variaveis 
         { 
-            mostraTabela();
-            empilha(contaVar);
+            empilha(contaVar, 'n');
             if (contaVar) 
                 fprintf(yyout,"\tAMEM\t%d\n", contaVar); 
             
         }
 
     // acrescentar as funções
-       funcoes
+       rotinas
        T_INICIO lista_comandos T_FIM
         { 
-            int conta = desempilha();
+            int conta = desempilha('n');
             if (conta)
                 fprintf(yyout,"\tDMEM\t%d\n", conta); 
             fprintf(yyout,"\tFIMP\n");
-        }
+            mostraTabela();
+        } 
     ;
 
 cabecalho
@@ -116,33 +128,43 @@ lista_variaveis
           strcpy(elemTab.id, atoma);
           elemTab.end = contaVar;
           elemTab.tip = tipo;
-          // elemTab.esc = escopo;
+          elemTab.esc = escopo;
+          elemTab.cat = 'v';
           insereSimbolo(elemTab);
-          contaVar++; 
+          contaVar++;
+          if (elemTab.esc == 'f')
+            contaVarLoc++;
         }
     | T_IDENTIF
         { 
           strcpy(elemTab.id, atoma);
           elemTab.end = contaVar;
           elemTab.tip = tipo;
-          // elemTab.esc = escopo;
+          elemTab.esc = escopo;
+          elemTab.cat = 'v';
           insereSimbolo(elemTab);
           contaVar++;
+          if (elemTab.esc == 'f')
+            contaVarLoc++;
         }
+    ;
+
+rotinas
+    : //nao tem fucoes
+    |
+        { fprintf(yyout,"\tDSVS\tL0\n");}
+    funcoes
+        { fprintf(yyout,"L0\tNADA\n"); }
     ;
 
 // regras para as funções
 // acrescentar lista_parametros
 funcoes
-    :
+    : funcao
     | funcao funcoes
     {
-        // contavar == ...
-
+    //contavar == ...
     // fprintf(yyout...)
-
-
-
     }
     ;
 
@@ -152,17 +174,41 @@ funcao
     strcpy(elemTab.id, atoma);
     elemTab.tip = tipo;
     elemTab.cat = 'f';
-   // elemTab.esc = 'esc';
+    elemTab.esc = escopo;
+    escopo = 'L';
     elemTab.rot = ++rotulo;
     insereSimbolo(elemTab);
-
     // buscaRot = buscaSimbolo.elemTab id;
+    fprintf(yyout,"L%d\tENSP\n", rotulo);
+    contaVar++;
 
-    // fprintf(yyout,"L%d\t ENSP\n", rotulo);
+    
+    posParametro = buscaSimbolo(elemTab.id);  
+
 
     }
-    T_ABRE parametros T_FECHA // ROTINA PARA AJUSTAR PARAMETROS
-      variaveis T_INICIO lista_comandos T_FIMFUNC
+    T_ABRE parametros T_FECHA 
+        // ROTINA PARA AJUSTAR PARAMETROS
+       {
+            updateParams(numeroPar);
+       }
+    variaveis {
+        // ROTINA AJUSTAR VARIAVEIS LOCAIS RET
+        //empilha(contaVarLoc, 'n');
+        if(contaVarLoc)
+            fprintf(yyout,"\tAMEM\t%d\n", contaVarLoc);
+    }
+    T_INICIO{
+        //mostrapilha();
+    }
+    
+     lista_comandos T_FIMFUNC
+    { 
+        posParametro = -1;
+        escopo = 'G';
+        funcoesQuantidade++;  
+
+    }
     ;
 
 parametros
@@ -172,6 +218,16 @@ parametros
 
 parametro 
     : tipo T_IDENTIF
+    { 
+
+        strcpy(elemTab.id, atoma);
+        elemTab.tip = tipo;
+        elemTab.esc = 'L';
+        elemTab.cat = 'p';
+        elemTab.rot = 0;
+        insereSimbolo(elemTab);
+        numeroPar++;
+    }
     ;
 
 
@@ -189,7 +245,22 @@ comando
     ;
 
 retorno
-    : T_RETORNE expressao
+    : T_RETORNE //{mostrapilha();} 
+    expressao
+    {
+    //mostrapilha();
+    int ret = desempilha('t');
+    int tipo = tabSimb[posParametro].tip;
+    if (ret != tipo){
+        yyerror("incompatibilidade de tipo a variavel");
+    }
+    fprintf(yyout,"\tARZL\t%d\n", tabSimb[posParametro].end);
+    if (contaVarLoc){
+        fprintf(yyout,"\tDMEM\t%d\n", contaVarLoc);
+    }  
+    fprintf(yyout,"\tRTSP\t%d\n", tabSimb[posParametro].npa);
+    
+    }
     // deve gerar (depois da traducao)
     // ARZL (valor de retorno) DMEN (se tiver variavel local)
     // e um RTSP n
@@ -213,7 +284,7 @@ leitura
 escrita 
     : T_ESCREVA expressao 
         {
-            desempilha(); 
+            desempilha('t'); 
             fprintf(yyout,"\tESCR\n");
         }
     ;
@@ -222,20 +293,20 @@ repeticao
     : T_ENQTO
         { 
             fprintf(yyout,"L%d\tNADA\n", ++rotulo); 
-            empilha(rotulo);
+            empilha(rotulo, 'r');
         } 
     expressao T_FACA  
         { 
-            int tip = desempilha();
+            int tip = desempilha('t');
             if(tip != LOG) yyerror("Incompatibilidade de tipo!");
             fprintf(yyout,"\tDSVF\tL%d\n", ++rotulo); 
-            empilha(rotulo);
+            empilha(rotulo, 'r');
         }
     lista_comandos
     T_FIMENQTO
         {
-            int rot1 = desempilha();
-            int rot2 = desempilha();
+            int rot1 = desempilha('r');
+            int rot2 = desempilha('r');
             fprintf(yyout,"\tDSVS\tL%d\nL%d\tNADA\n", rot2, rot1); 
 
         }
@@ -244,20 +315,20 @@ repeticao
 selecao 
     : T_SE expressao T_ENTAO 
         { 
-            int tip = desempilha();
+            int tip = desempilha('t');
             if(tip != LOG) yyerror("Incompatibilidade de tipo!");
             fprintf(yyout,"\tDSVF\tL%d\n", ++rotulo);
-            empilha(rotulo); 
+            empilha(rotulo, 'r'); 
         }
     lista_comandos T_SENAO 
         {
-            int rot = desempilha(); 
+            int rot = desempilha('r'); 
             fprintf(yyout,"\tDSVS\tL%d\nL%d\tNADA\n", ++rotulo, rot); 
-            empilha(rotulo);
+            empilha(rotulo, 'r');
         }
     lista_comandos T_FIMSE
         {
-            int rot = desempilha(); 
+            int rot = desempilha('r'); 
             fprintf(yyout,"L%d\tNADA\n", rot); 
         }
     ;
@@ -266,14 +337,18 @@ atribuicao
     : T_IDENTIF
         {
             int pos = buscaSimbolo(atoma);
-            empilha(pos);
+            empilha(pos, 'p');
         } 
       T_ATRIBUI expressao 
         { 
-            int tip = desempilha();
-            int pos = desempilha();
-            if(tabSimb[pos].tip != tip) yyerror("Incompatibilidade de tipo!");
-            fprintf(yyout,"\tARZG\t%d\n", tabSimb[pos].end); 
+            int tip = desempilha('t');
+            int pos = desempilha('p');
+            if(tabSimb[pos].tip != tip) 
+                yyerror("Incompatibilidade de tipo!");
+            if(tabSimb[pos].esc == 'G') 
+                fprintf(yyout,"\tARZG\t%d\n", tabSimb[pos].end); 
+            else
+                fprintf(yyout,"\tARZL\t%d\n", tabSimb[pos].end); 
         }
 
 expressao 
@@ -325,28 +400,46 @@ expressao
     | termo 
     ;
 
-//termo : identificador chamada
-//    | T_NUMERO
-//    :
-//    ;
-
-
 identificador
     : T_IDENTIF
+     {  
+       int pos = buscaSimbolo(atoma);
+       empilha (pos, 'p');
+     }
     ;
 
 
 // A funcao eh chamada como um termo numa expressao
 chamada
     : // sem parametros eh uma variavel
+        {
+            //mostrapilha();
+            int pos = desempilha('p');
+            if (tabSimb[pos].esc == 'G'){   
+                fprintf(yyout, "\tCRVG\t%d\n", tabSimb[pos].end);
+            }else {  
+                fprintf(yyout,"\tCRVL\t%d\n", tabSimb[pos].end);
+            }
+            empilha(tabSimb[pos].tip, 't');
+        }
     | T_ABRE 
-    {fprintf(yyout, "\tAMEM\t%d\n", tabSimb[pos].end);}
-    lista_argumentos T_FECHA
+            {fprintf(yyout, "\tAMEM\t%d\n", funcoesQuantidade);}
+    lista_argumentos 
+    T_FECHA
+    {
+        int pos = desempilha('p');
+        fprintf(yyout, "\tSVCP\n");
+        fprintf(yyout, "\tDSVS\tL%d\n", tabSimb[pos].rot);
+        empilha (tabSimb[pos].tip, 't');
+    }
     ;
 
 lista_argumentos
     : 
-    | expressao lista_argumentos
+    | expressao {
+        desempilha('t');
+    }
+    lista_argumentos
     ;
 
 
@@ -356,29 +449,29 @@ termo
        { 
             int pos = buscaSimbolo(atoma);
             fprintf(yyout,"\tCRVG\t%d\n", tabSimb[pos].end);
-            empilha(tabSimb[pos].tip);
+            empilha(tabSimb[pos].tip, 't');
         } */
     | T_NUMERO
         { 
             fprintf(yyout,"\tCRCT\t%s\n", atoma); 
-            empilha(INT);
+            empilha(INT, 't');
         }
     | T_V 
         { 
             fprintf(yyout,"\tCRCT\t1\n"); 
-            empilha(LOG);    
+            empilha(LOG, 't');    
         }
     | T_F 
         { 
             fprintf(yyout,"\tCRCT\t0\n");
-            empilha(LOG);    
+            empilha(LOG, 't');    
         }
     | T_NAO termo
         {
-            int t = desempilha();
+            int t = desempilha('t');
             if(t != LOG) yyerror("Incompatibilidade de tipo!");
             fprintf(yyout,"\tNEGA\n"); 
-            empilha(LOG);
+            empilha(LOG,'t');
         }
     | T_ABRE expressao T_FECHA
     ;

@@ -1,10 +1,11 @@
 programa teste1
-    inteiro a c A Total TOTAL total b
-inicio 
-    leia a
-    leia b
-    leia c
-    b <- a * 10 
-    c <- a - 1 
-    escreva b + c
-fimprograma 
+func inteiro maior (inteiro a inteiro b)
+inicio
+  se a > b
+      entao retorne a
+      senao retorne b
+  fimse
+fimfunc
+inicio
+    escreva maior (10 20)
+fimprograma
