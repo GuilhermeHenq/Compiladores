@@ -29,6 +29,9 @@ int posFuncao = -1;
 //quantidade de funcoes do programa
 int funcoesQuantidade;
 
+//apenas para printar de qual funcao é a tabela de simbolos, Pura estética.
+int imprimirFunc = 1;
+
 %}
 
 %token T_PROGRAMA
@@ -219,7 +222,11 @@ funcao
             yyerror("A função precisa de retorno"); */
 
 
+        printf("\n--------------------------------------------------------------------------------------------------- ");
+        printf("\n                        TABELA DE SIMBOLO COM VALORES LOCAIS DA FUNCAO %d\n ", imprimirFunc);
+
         // mostra a tabela de simbolos
+
         mostraTabela();
 
         //limpa tabela tirando as variaveis e parametros locais
@@ -233,6 +240,9 @@ funcao
 
         // soma-se 1 na quantidade de funcoes do programa
         funcoesQuantidade++;  
+
+        // Soma-se 1 na quantidade do imprimir funca caso haja outra funcao
+        imprimirFunc++;
         
         //limpa a quantidade de parametros para caso haja +1 funcao
         numeroPar = 0;
@@ -336,7 +346,7 @@ repeticao
     expressao T_FACA  
         { 
             int tip = desempilha('t');
-            if(tip != LOG) yyerror("Incompatibilidade de tipo!");
+            if(tip != LOG) yyerror("Incompatibilidade de tipo! 2 ");
             fprintf(yyout,"\tDSVF\tL%d\n", ++rotulo); 
             empilha(rotulo, 'r');
         }
@@ -354,7 +364,7 @@ selecao
     : T_SE expressao T_ENTAO 
         { 
             int tip = desempilha('t');
-            if(tip != LOG) yyerror("Incompatibilidade de tipo!");
+            if(tip != LOG) yyerror("Incompatibilidade de tipo! 3 ");
             fprintf(yyout,"\tDSVF\tL%d\n", ++rotulo);
             empilha(rotulo, 'r'); 
         }
@@ -382,7 +392,7 @@ atribuicao
             int tip = desempilha('t');
             int pos = desempilha('p');
             if(tabSimb[pos].tip != tip) 
-                yyerror("Incompatibilidade de tipo!");
+                yyerror("Incompatibilidade de tipo! 4 ");
             if(tabSimb[pos].esc == 'G') 
                 fprintf(yyout,"\tARZG\t%d\n", tabSimb[pos].end); 
             else
@@ -508,7 +518,7 @@ termo
     | T_NAO termo
         {
             int t = desempilha('t');
-            if(t != LOG) yyerror("Incompatibilidade de tipo!");
+            if(t != LOG) yyerror("Incompatibilidade de tipo! 1 ");
             fprintf(yyout,"\tNEGA\n"); 
             empilha(LOG,'t');
         }

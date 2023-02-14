@@ -2,7 +2,7 @@ programa teste7
 inteiro x y
 func inteiro soma (logico a inteiro b)
 inicio
-    retorne a + b
+    retorne b
 fimfunc
 func inteiro mult(inteiro c inteiro d logico j logico k logico z inteiro h)
 inicio
