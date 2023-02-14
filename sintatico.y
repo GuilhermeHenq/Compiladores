@@ -21,7 +21,7 @@ int tipo;
 char escopo = 'G';
 
 // quantidade de variaveis locais de cada função
-int contaVarLoc;
+int contaVarLoc = 0;
 
 // a posicao de endereco da funcao vai ser guardada aqui, inicializa -1 para nao ter erro de comecar com 0 e o endereco ser 0
 int posFuncao = -1;
@@ -141,7 +141,7 @@ lista_variaveis
           elemTab.cat = 'v';
           insereSimbolo(elemTab);
           contaVar++;
-          if (elemTab.esc == 'f')
+          if (elemTab.esc == 'L')
             contaVarLoc++;
         }
     | T_IDENTIF
@@ -153,7 +153,7 @@ lista_variaveis
           elemTab.cat = 'v';
           insereSimbolo(elemTab);
           contaVar++;
-          if (elemTab.esc == 'f')
+          if (elemTab.esc == 'L')
             contaVarLoc++;
         }
     ;
@@ -209,6 +209,7 @@ funcao
         // ROTINA AJUSTAR VARIAVEIS LOCAIS RET
         //empilha(contaVarLoc, 'n');
         // verifica se há variaveis locais e as armazena gerando um AMEM
+        printf("\n%d", contaVarLoc);
         if(contaVarLoc)
             fprintf(yyout,"\tAMEM\t%d\n", contaVarLoc);
     }
@@ -471,7 +472,7 @@ chamada
             empilha(tabSimb[pos].tip, 't');
         }
     | T_ABRE 
-            {fprintf(yyout, "\tAMEM\t%d\n", funcoesQuantidade);}
+            {fprintf(yyout, "\tAMEM\t%d\n", 1);}
     lista_argumentos 
     T_FECHA
     {

@@ -1,16 +1,10 @@
 programa teste4
-inteiro x y
-func inteiro maior (inteiro a inteiro b)
-logico c
+inteiro x
+func inteiro quad (inteiro a)
 inicio
-    c <- a > b
-    se c
-        entao retorne a
-        senao retorne b
-    fimse
+    retorne a * a
 fimfunc
 inicio
     leia x
-    leia y
-    escreva maior (x y)
+    escreva quad (quad(x))
 fimprograma

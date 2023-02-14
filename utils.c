@@ -49,11 +49,11 @@ void limparTabela()
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-char * format_params(struct elemTabSimbolos tab)
+char * format_params(struct elemTabSimbolos simbo)
 {
   char *formatted_params = malloc(150);
-    for (int i = 0; i < tab.npa; i++) {
-      switch (tab.par[i]) {
+    for (int i = 0; i < simbo.npa; i++) {
+      switch (simbo.par[i]) {
         case 0:
           strcat(formatted_params, " [INT]");
           break;
@@ -63,8 +63,8 @@ char * format_params(struct elemTabSimbolos tab)
         default:
           break;
       }
-      if (i < tab.npa - 1) {
-        strcat(formatted_params, " -> ");
+      if (i < simbo.npa - 1) {
+        strcat(formatted_params, " >>>> ");
       }
     }
   return formatted_params;

@@ -1,9 +1,16 @@
-programa teste3 
-    inteiro X 
-inicio 
-    X <- 20 
-    enquanto X > 10 faca 
-        escreva X 
-        X <- X - 1 
-    fimenquanto
-fimprograma 
+programa teste3
+inteiro x y
+func inteiro maior (inteiro a inteiro b)
+logico c
+inicio
+    c <- a > b
+    se c
+        entao retorne a
+        senao retorne b
+    fimse
+fimfunc
+inicio
+    leia x
+    leia y
+    escreva maior (x y)
+fimprograma

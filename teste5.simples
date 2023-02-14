@@ -1,8 +1,13 @@
 programa teste5
-func inteiro maior (inteiro a inteiro b)
+inteiro x
+func inteiro fatorial (inteiro a)
 inicio
-    retorne a 
+    se a > 0
+        entao retorne a * fatorial (a - 1)
+        senao retorne 1
+    fimse
 fimfunc
-inicio 
-    escreva maior(10 20)
+inicio
+    leia x
+    escreva fatorial (x)
 fimprograma
