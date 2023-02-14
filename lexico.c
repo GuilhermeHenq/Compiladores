@@ -518,15 +518,24 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "lexico.l"
-#line 2 "lexico.l"
+/* +=============================================================
+/*2 | UNIFAL = Universidade Federal de Alfenas .
+/*3 | BACHARELADO EM CIENCIA DA COMPUTACAO.
+/*4 | Trabalho . . : Funcao com retorno
+/*5 | Disciplina : Teoria de Linguagens e Compiladores
+/*6 | Professor . : Luiz Eduardo da Silva
+/*7 | Aluno . . . . . : Guilherme Henrique Pereira Serafini
+/*8 | Data . . . . . . : 17/02/2023
+/*9 +============================================================= */
+#line 11 "lexico.l"
 #include "sintatico.h"
 char atoma[100];
 int cont = 1;
 int yyerror (char *s);
-#line 527 "lexico.c"
+#line 536 "lexico.c"
 
 /* acrescentar as palavras chaves retorne, func, fimfunc */
-#line 530 "lexico.c"
+#line 539 "lexico.c"
 
 #define INITIAL 0
 #define coment 1
@@ -744,10 +753,10 @@ YY_DECL
 		}
 
 	{
-#line 15 "lexico.l"
+#line 24 "lexico.l"
 
 
-#line 751 "lexico.c"
+#line 760 "lexico.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -806,222 +815,222 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 17 "lexico.l"
+#line 26 "lexico.l"
 return T_PROGRAMA;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 18 "lexico.l"
+#line 27 "lexico.l"
 return T_INICIO;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 19 "lexico.l"
+#line 28 "lexico.l"
 return T_FIM;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 20 "lexico.l"
+#line 29 "lexico.l"
 return T_LEIA;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 21 "lexico.l"
+#line 30 "lexico.l"
 return T_ESCREVA;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 22 "lexico.l"
+#line 31 "lexico.l"
 return T_SE;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 23 "lexico.l"
+#line 32 "lexico.l"
 return T_ENTAO;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 24 "lexico.l"
+#line 33 "lexico.l"
 return T_SENAO;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 25 "lexico.l"
+#line 34 "lexico.l"
 return T_FIMSE;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 26 "lexico.l"
+#line 35 "lexico.l"
 return T_ENQTO;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 27 "lexico.l"
+#line 36 "lexico.l"
 return T_FACA;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 28 "lexico.l"
+#line 37 "lexico.l"
 return T_FIMENQTO;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 29 "lexico.l"
+#line 38 "lexico.l"
 return T_INTEIRO;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 30 "lexico.l"
+#line 39 "lexico.l"
 return T_LOGICO;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 31 "lexico.l"
+#line 40 "lexico.l"
 return T_RETORNE;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 32 "lexico.l"
+#line 41 "lexico.l"
 return T_FUNC;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 33 "lexico.l"
+#line 42 "lexico.l"
 return T_FIMFUNC;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 35 "lexico.l"
+#line 44 "lexico.l"
 return T_MAIS;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 36 "lexico.l"
+#line 45 "lexico.l"
 return T_MENOS;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 37 "lexico.l"
+#line 46 "lexico.l"
 return T_VEZES;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 38 "lexico.l"
+#line 47 "lexico.l"
 return T_DIV;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 39 "lexico.l"
+#line 48 "lexico.l"
 return T_MAIOR;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 40 "lexico.l"
+#line 49 "lexico.l"
 return T_MENOR;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 41 "lexico.l"
+#line 50 "lexico.l"
 return T_IGUAL;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 42 "lexico.l"
+#line 51 "lexico.l"
 return T_E;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 43 "lexico.l"
+#line 52 "lexico.l"
 return T_OU;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 44 "lexico.l"
+#line 53 "lexico.l"
 return T_NAO;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 45 "lexico.l"
+#line 54 "lexico.l"
 return T_ATRIBUI;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 47 "lexico.l"
+#line 56 "lexico.l"
 return T_ABRE;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 48 "lexico.l"
+#line 57 "lexico.l"
 return T_FECHA;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 50 "lexico.l"
+#line 59 "lexico.l"
 return T_V;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 51 "lexico.l"
+#line 60 "lexico.l"
 return T_F;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 53 "lexico.l"
+#line 62 "lexico.l"
 ;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 54 "lexico.l"
+#line 63 "lexico.l"
 BEGIN(coment);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 55 "lexico.l"
+#line 64 "lexico.l"
 BEGIN(INITIAL);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 56 "lexico.l"
+#line 65 "lexico.l"
 ;
 	YY_BREAK
 case 37:
 /* rule 37 can match eol */
 YY_RULE_SETUP
-#line 57 "lexico.l"
+#line 66 "lexico.l"
 cont++;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 59 "lexico.l"
+#line 68 "lexico.l"
 { strcpy(atoma, yytext); return T_IDENTIF;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 60 "lexico.l"
+#line 69 "lexico.l"
 { strcpy(atoma, yytext); return T_NUMERO;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 61 "lexico.l"
+#line 70 "lexico.l"
 ;
 	YY_BREAK
 case 41:
 /* rule 41 can match eol */
 YY_RULE_SETUP
-#line 62 "lexico.l"
+#line 71 "lexico.l"
 cont++;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 63 "lexico.l"
+#line 72 "lexico.l"
 yyerror("Erro lexico");
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 64 "lexico.l"
+#line 73 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 1025 "lexico.c"
+#line 1034 "lexico.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(coment):
 	yyterminate();
@@ -2027,7 +2036,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 64 "lexico.l"
+#line 73 "lexico.l"
 
 
 int yyerror (char *s) {

@@ -1,16 +1,21 @@
 programa teste7 
 inteiro x y
-func inteiro soma (inteiro a inteiro b)
+func inteiro soma (logico a inteiro b)
 inicio
-    retorne a + b
+    retorne b
 fimfunc
-func inteiro mult(inteiro c inteiro d)
+func inteiro mult(inteiro c inteiro d logico j logico k logico z inteiro h)
 inicio
     retorne c * d
+fimfunc
+func inteiro isso()
+inicio
+    retorne 10
 fimfunc
 inicio
     leia x
     leia y
-    escreva soma (x y)
+    escreva soma (V y)
     escreva mult (x y)
+    escreva isso ()
 fimprograma

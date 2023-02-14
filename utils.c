@@ -1,3 +1,12 @@
+/*+=============================================================
+2 | UNIFAL = Universidade Federal de Alfenas .
+3 | BACHARELADO EM CIENCIA DA COMPUTACAO.
+4 | Trabalho . . : Funcao com retorno
+5 | Disciplina : Teoria de Linguagens e Compiladores
+6 | Professor . : Luiz Eduardo da Silva
+7 | Aluno . . . . . : Guilherme Henrique Pereira Serafini
+8 | Data . . . . . . : 17/02/2023
+9 +=============================================================*/
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,12 +18,17 @@
 
 enum {INT, LOG};
 
+//assinatura das funções
 int desempilha(char);
 void empilha(int, char);
 void mostrapilha();
 void limparTabela();
 void arrumarPam(int, int);
+void erroOne(int, int)
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct elemTabSimbolos {
     char id[100];
     int end;            //endereço (global) ou deslocamento (local)
@@ -27,16 +41,16 @@ struct elemTabSimbolos {
 } tabSimb[TAM_TAB], elemTab;
 
 int posTab = 0; 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void maiscula (char *s) {
     for(int i = 0; s[i]; i++)
         s[i] = toupper(s[i]);
 }
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void limparTabela()
 {
   for (int i = 0; i < posTab; i++){
-      if (tabSimb[i].esc == 'L' && tabSimb[i].cat == 'v'){
+      if (tabSimb[i].esc == 'L'){
           for(int j = i; j < posTab - 1; j++){
             tabSimb[j] = tabSimb[j + 1];
           }
@@ -44,21 +58,20 @@ void limparTabela()
           i--;
       }
   }
-}  
-///////////////////////////////////////////////////////////////////////////
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 char * format_params(struct elemTabSimbolos elem)
 {
-  char *formatted_params = malloc(50);
-  if (elem.par[0] != 0 && elem.par[0] != 1) {
-    strcpy(formatted_params, "   0");
-  } else {
+  char *formatted_params = malloc(150);
     for (int i = 0; i < elem.npa; i++) {
       switch (elem.par[i]) {
         case 0:
-          strcat(formatted_params, "|INT|");
+          strcat(formatted_params, " |INT|");
           break;
         case 1:
-          strcat(formatted_params, "|LOG|");
+          strcat(formatted_params, " |LOG|");
           break;
         default:
           break;
@@ -67,20 +80,35 @@ char * format_params(struct elemTabSimbolos elem)
         strcat(formatted_params, " -> ");
       }
     }
-  }
   return formatted_params;
-  free(formatted_params);
 }
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void arrumarPam(int pos, int npa){
     tabSimb[pos].npa = npa;
     tabSimb[pos].end = (-3) - npa;
     for(int i = 1; i <= npa; i++){
       tabSimb[pos+i].end = ((-3) - npa) + i;
+      tabSimb[pos].par[i-1] = tabSimb[pos+i].tip;
     }
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// void ajustarPam(int pos, int npa){
+//     for(int i = 1; i <= npa; i++){
+//       tabSimb[pos].par[i-1] = tabSimb[pos+i].tip;
+//     }
+// }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// void printarParametro(){
+//  for (int i = TAM_TAB - 1; i >= 0; i--) {
+//     if (tabSimb[i].cat == 'f') {
+//       if(tabSimb[i].cat == 'p'){
+//         tabSimb
+//       }
+//     } 
+//   }
+// }
 
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void updateParams(int count) {
   for (int i = TAM_TAB - 1; i >= 0; i--) {
     if (tabSimb[i].cat == 'f') {
@@ -91,12 +119,12 @@ void updateParams(int count) {
         int idx = i + j + 1;
         tabSimb[idx].end = tabSimb[i].end + j + 1;
         tabSimb[idx].rot = 0;
-        //tabSimb[i].par[j] = tabSimb[idx].tip;
+        tabSimb[i].par[j] = tabSimb[idx].tip;
       } 
     } 
   }
 }
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int buscaSimbolo(char *id)
 {
     int i;
@@ -110,7 +138,15 @@ int buscaSimbolo(char *id)
     }
     return i;
 }
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void erroOne(int captura, int posFuncao) { 
+        for(int i=0;i <= 100; i++){  
+            if(tabSimb[posFuncao].par[i] != captura){
+              yyerror("erro de blabla");
+            }
+        }
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void insereSimbolo (struct elemTabSimbolos elem) {
     int i; 
     //maiscula(elem.id);
@@ -139,20 +175,23 @@ void insereSimbolo (struct elemTabSimbolos elem) {
 //    for(int i = 0; i < tabSimb[i].npa; i++) 
 //    printf("[%d] -> [%d]")
 //}
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void mostraTabela () {
     puts("---------------------------------------------------------------------------------------------------");
     puts("                                       Tabela de Simbolos");
     puts("---------------------------------------------------------------------------------------------------");
-    printf("\n%30s | %s | %s | %s | %s | %s | %s | %s \n", "ID", "END", "TIP", "ESC", "ROT", "CAT", "NPAR", "PAR");
+    printf("\n%s | %27s | %s | %s | %s | %s | %s | %s | %s \n", "#", "ID", "END", "TIP", "ESC", "ROT", "CAT", "NPAR", "PAR");
     for(int i = 0; i < 100; i++) 
         printf(".");
-    for(int i = 0; i < posTab; i++)
-        printf("\n%30s | %3d | %s | %2c | %3d | %3c | %3d \n", tabSimb[i].id, tabSimb[i].end, tabSimb[i].tip == INT ? "INT" : "LOG", tabSimb[i].esc
-        , tabSimb[i].rot, tabSimb[i].cat, tabSimb[i].npa);
+    printf("\n");
+    for(int i = 0; i < posTab; i++) { 
+        printf("\n%d", i); 
+        printf("|%30s | %3d | %s | %2c | %3d | %3c | %3d | %2s\n", tabSimb[i].id, tabSimb[i].end, tabSimb[i].tip == INT ? "INT" : "LOG", tabSimb[i].esc
+        , tabSimb[i].rot, tabSimb[i].cat, tabSimb[i].npa, format_params(tabSimb[i]));
+        }
     printf("\n");
 }
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void testaTipo(int tipo1, int tipo2, int ret){
     int t1 = desempilha('t');
     int t2 = desempilha('t');
@@ -162,7 +201,7 @@ void testaTipo(int tipo1, int tipo2, int ret){
 
 // estrutura da pilha semantica
 // usada para enderecos, variaveis, rotulos
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define TAM_PIL 100
 struct {
     int valor;
@@ -170,14 +209,14 @@ struct {
 }pilha[TAM_PIL];
 
 int topo = -1;
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void empilha (int valor, char tipo) {
     if (topo == TAM_PIL)
         yyerror("Pilha semântica cheia");
     pilha[++topo].valor = valor;
     pilha[topo].tipo = tipo;
 }
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int desempilha(char tipo) {
     if (topo == -1)
         yyerror("Pilha semântica vazia");
@@ -189,7 +228,7 @@ int desempilha(char tipo) {
   
     return pilha[topo--].valor;
 }
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void mostrapilha()
 {
     int i = topo;
@@ -201,4 +240,4 @@ void mostrapilha()
     }
     printf("]\n");
 }
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

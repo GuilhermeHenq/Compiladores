@@ -1,3 +1,12 @@
+/*+=============================================================
+2 | UNIFAL = Universidade Federal de Alfenas .
+3 | BACHARELADO EM CIENCIA DA COMPUTACAO.
+4 | Trabalho . . : Funcao com retorno
+5 | Disciplina : Teoria de Linguagens e Compiladores
+6 | Professor . : Luiz Eduardo da Silva
+7 | Aluno . . . . . : Guilherme Henrique Pereira Serafini
+8 | Data . . . . . . : 17/02/2023
+9 +=============================================================*/
 %{
 #include "lexico.c"
 #include <stdio.h>
@@ -175,8 +184,10 @@ funcao
     escopo = 'L';
     elemTab.rot = ++rotulo;
     insereSimbolo(elemTab);
-    // buscaRot = buscaSimbolo.elemTab id;
+    
+    //printa o comando ENSP para inicio
     fprintf(yyout,"L%d\tENSP\n", rotulo);
+    //quantidade de variaveis globais +1, ja que a funcao é Variavel Global
     contaVar++;
 
     // guarda o endereco da funcao na variavel posFuncao
@@ -188,6 +199,7 @@ funcao
         // ROTINA PARA AJUSTAR PARAMETROS
        {
             arrumarPam(posFuncao, numeroPar);
+            //ajustarPam(posFuncao, numeroPar);
             //updateParams(numeroPar);
        }
     variaveis {
@@ -205,18 +217,24 @@ funcao
     { 
         /* if(retorno == 0)
             yyerror("A função precisa de retorno"); */
+
+
         // mostra a tabela de simbolos
         mostraTabela();
-        //limpa tabela tirando as variaveis locais
+
+        //limpa tabela tirando as variaveis e parametros locais
         limparTabela();
 
         // posFuncao volta ao seu valor original visto que acabou a funcao
         posFuncao = -1;
+
         // escopo volta a ser global
         escopo = 'G';
+
         // soma-se 1 na quantidade de funcoes do programa
         funcoesQuantidade++;  
-        //limpa a quat de parametros para caso haja +1 funcao
+        
+        //limpa a quantidade de parametros para caso haja +1 funcao
         numeroPar = 0;
     }
     ;
@@ -457,7 +475,8 @@ chamada
 lista_argumentos
     : 
     | expressao {
-        desempilha('t');
+        int captura = desempilha('t');
+        erroOne(captura, posFuncao);
     }
     lista_argumentos
     ;

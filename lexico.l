@@ -1,3 +1,12 @@
+/* +=============================================================
+/*2 | UNIFAL = Universidade Federal de Alfenas .
+/*3 | BACHARELADO EM CIENCIA DA COMPUTACAO.
+/*4 | Trabalho . . : Funcao com retorno
+/*5 | Disciplina : Teoria de Linguagens e Compiladores
+/*6 | Professor . : Luiz Eduardo da Silva
+/*7 | Aluno . . . . . : Guilherme Henrique Pereira Serafini
+/*8 | Data . . . . . . : 17/02/2023
+/*9 +============================================================= */
 %{
 #include "sintatico.h"
 char atoma[100];
