@@ -20,7 +20,7 @@ int rotulo = 0;
 int tipo;
 char escopo = 'G';
 
-// quantidade de variaveis locais de cada funcao
+// quantidade de variaveis locais de cada função
 int contaVarLoc;
 
 // a posicao de endereco da funcao vai ser guardada aqui, inicializa -1 para nao ter erro de comecar com 0 e o endereco ser 0
@@ -97,7 +97,7 @@ programa
         }
 
     // acrescentar as funções
-    // rotinas é uma rotina feita pelo Luiz para chamar as funcoes
+    // rotinas é uma rotina feita pelo Luiz para chamar as funções
        rotinas
        T_INICIO lista_comandos T_FIM
         { 

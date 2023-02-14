@@ -1,12 +1,3 @@
-/*+=============================================================
-2 | UNIFAL = Universidade Federal de Alfenas .
-3 | BACHARELADO EM CIENCIA DA COMPUTACAO.
-4 | Trabalho . . : Funcao com retorno
-5 | Disciplina : Teoria de Linguagens e Compiladores
-6 | Professor . : Luiz Eduardo da Silva
-7 | Aluno . . . . . : Guilherme Henrique Pereira Serafini
-8 | Data . . . . . . : 17/02/2023
-9 +=============================================================*/
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
@@ -18,7 +9,6 @@
 
 enum {INT, LOG};
 
-//assinatura das funções
 int desempilha(char);
 void empilha(int, char);
 void mostrapilha();
@@ -58,23 +48,22 @@ void limparTabela()
   }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-char * format_params(struct elemTabSimbolos elem)
+char * format_params(struct elemTabSimbolos tab)
 {
   char *formatted_params = malloc(150);
-    for (int i = 0; i < elem.npa; i++) {
-      switch (elem.par[i]) {
+    for (int i = 0; i < tab.npa; i++) {
+      switch (tab.par[i]) {
         case 0:
-          strcat(formatted_params, " |INT|");
+          strcat(formatted_params, " [INT]");
           break;
         case 1:
-          strcat(formatted_params, " |LOG|");
+          strcat(formatted_params, " [LOG]");
           break;
         default:
           break;
       }
-      if (i < elem.npa - 1) {
+      if (i < tab.npa - 1) {
         strcat(formatted_params, " -> ");
       }
     }
@@ -126,7 +115,7 @@ void updateParams(int count) {
 int buscaSimbolo(char *id)
 {
     int i;
-    //maiscula(id);
+    maiscula(id);
     for (i = posTab - 1; strcmp(tabSimb[i].id, id) && i >= 0; i--)
         ;
     if (i == -1) {
@@ -147,7 +136,7 @@ void erroOne(int captura, int posFuncao) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void insereSimbolo (struct elemTabSimbolos elem) {
     int i; 
-    //maiscula(elem.id);
+    maiscula(elem.id);
     if (posTab == TAM_TAB)
         yyerror("Tabela de Simbolos Cheia!");
     for (i = posTab - 1; strcmp(tabSimb[i].id, elem.id) && i >= 0; i--)
@@ -160,14 +149,15 @@ void insereSimbolo (struct elemTabSimbolos elem) {
     tabSimb[posTab++] = elem; 
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Desenvolver uma rotina para ajustar o endereço dos parametros
 // na tabela de simbolos e o vetor de parametros na função
 // depois que for cadastrado o ultimo parametro
-
 // Modificar a rotina mostratabela para apresentar os outros campos
 // (esc, rot, cat, ...) da tabela.
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //void imprimirVetor (struct elemTabSimbolos elem)
 //{
 //    for(int i = 0; i < tabSimb[i].npa; i++) 
@@ -178,7 +168,7 @@ void mostraTabela () {
     puts("---------------------------------------------------------------------------------------------------");
     puts("                                       Tabela de Simbolos");
     puts("---------------------------------------------------------------------------------------------------");
-    printf("\n%s | %27s | %s | %s | %s | %s | %s | %s | %s \n", "#", "ID", "END", "TIP", "ESC", "ROT", "CAT", "NPAR", "PAR");
+    printf("%s | %27s | %s | %s | %s | %s | %s | %s | %s \n", "#", "ID", "END", "TIP", "ESC", "ROT", "CAT", "NPAR", "PAR");
     for(int i = 0; i < 100; i++) 
         printf(".");
     printf("\n");
@@ -197,9 +187,9 @@ void testaTipo(int tipo1, int tipo2, int ret){
     empilha(ret, 't');
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // estrutura da pilha semantica
 // usada para enderecos, variaveis, rotulos
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define TAM_PIL 100
 struct {
     int valor;
