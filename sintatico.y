@@ -476,7 +476,7 @@ lista_argumentos
     : 
     | expressao {
         int captura = desempilha('t');
-        erroOne(captura, posFuncao);
+        //erroOne(captura, posFuncao);
     }
     lista_argumentos
     ;

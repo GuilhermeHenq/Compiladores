@@ -1889,7 +1889,7 @@ yyreduce:
 #line 477 "sintatico.y"
                 {
         int captura = desempilha('t');
-        erroOne(captura, posFuncao);
+        //erroOne(captura, posFuncao);
     }
 #line 1895 "sintatico.c"
     break;
