@@ -205,7 +205,8 @@ funcao
     { 
         /* if(retorno == 0)
             yyerror("A função precisa de retorno"); */
-        
+        // mostra a tabela de simbolos
+        mostraTabela();
         //limpa tabela tirando as variaveis locais
         limparTabela();
 
@@ -215,7 +216,8 @@ funcao
         escopo = 'G';
         // soma-se 1 na quantidade de funcoes do programa
         funcoesQuantidade++;  
-
+        //limpa a quat de parametros para caso haja +1 funcao
+        numeroPar = 0;
     }
     ;
 

@@ -1,10 +1,16 @@
-programa selecao
-    inteiro a b
-inicio 
-    leia a 
-    leia b
-    se a > b 
-        entao escreva a 
-        senao escreva b     
-    fimse 
+programa teste7 
+inteiro x y
+func inteiro soma (inteiro a inteiro b)
+inicio
+    retorne a + b
+fimfunc
+func inteiro mult(inteiro c inteiro d)
+inicio
+    retorne c * d
+fimfunc
+inicio
+    leia x
+    leia y
+    escreva soma (x y)
+    escreva mult (x y)
 fimprograma
