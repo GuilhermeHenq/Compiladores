@@ -47,7 +47,16 @@ void limparTabela()
       }
   }
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int atribuirVarLocal(){
+    int atribuir = 0;
+    for (int i = 1; i <= TAM_TAB; i++){
+        if (tabSimb[i].esc == 'L' && tabSimb[i].cat == 'v'){
+            tabSimb[i].end = atribuir;
+            atribuir++;
+        }
+    }
+} 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 char * format_params(struct elemTabSimbolos simbo)
 {
@@ -115,7 +124,7 @@ void updateParams(int count) {
 int buscaSimbolo(char *id)
 {
     int i;
-    maiscula(id);
+    //maiscula(id);
     for (i = posTab - 1; strcmp(tabSimb[i].id, id) && i >= 0; i--)
         ;
     if (i == -1) {
@@ -127,16 +136,14 @@ int buscaSimbolo(char *id)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void erroOne(int captura, int posFuncao) { 
-        for(int i=0;i <= 100; i++){  
-            if(tabSimb[posFuncao].par[i] != captura){
+            if(tabSimb[posFuncao].par[0] != captura){
               yyerror("erro de blabla");
             }
-        }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void insereSimbolo (struct elemTabSimbolos elem) {
     int i; 
-    maiscula(elem.id);
+    //maiscula(elem.id);
     if (posTab == TAM_TAB)
         yyerror("Tabela de Simbolos Cheia!");
     for (i = posTab - 1; strcmp(tabSimb[i].id, elem.id) && i >= 0; i--)
@@ -186,6 +193,15 @@ void testaTipo(int tipo1, int tipo2, int ret){
     if(t1 != tipo1 || t2 != tipo2) yyerror("Incompatibilidade de tipo!");
     empilha(ret, 't');
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// void composicaoFunc(int tipo1, int tipo2, int ret){
+//     int t1 = desempilha('t');
+//     int t2 = desempilha('t');
+//     if(t1 != tipo1 || t2 != tipo2) yyerror("Incompatibilidade de tipo!");
+//     empilha(ret, 't');
+// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // estrutura da pilha semantica

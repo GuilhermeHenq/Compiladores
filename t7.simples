@@ -1,0 +1,21 @@
+programa teste7
+   inteiro x y
+   func inteiro f (inteiro a logico b)
+   inteiro c d
+   inicio
+       se b ou a > 10
+          entao c <- 1
+                d <- 10
+          senao c <- 2
+                d <- 30
+       fimse
+       retorne c + d
+   fimfunc
+   func logico g ()
+   inicio
+      retorne V
+   fimfunc
+inicio
+   escreva f(5 F)
+   escreva g()
+fimprograma

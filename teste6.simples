@@ -1,13 +1,19 @@
-programa teste6
-    inteiro i j 
-inicio  
-    i <- 1 
-    enquanto i < 5 faca 
-        j <- 1 
-        enquanto j < 5 faca 
-            escreva i * j 
-            j <- j + 1 
-        fimenquanto 
-        i <- i + 1 
-    fimenquanto 
-fimprograma 
+programa teste5
+inteiro x
+inteiro y
+func inteiro teste (inteiro a)
+inicio
+    retorne a + a
+fimfunc
+func inteiro dupli (inteiro c)
+inicio
+    retorne c * c
+fimfunc
+func inteiro triplo (inteiro k)
+inicio
+    retorne k * k * k
+fimfunc
+inicio
+    leia x
+    escreva teste (x)
+fimprograma

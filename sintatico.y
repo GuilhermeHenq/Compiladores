@@ -20,6 +20,9 @@ int rotulo = 0;
 int tipo;
 char escopo = 'G';
 
+// conta a quantidade de argumentos na funcao
+int contaArg = 0;
+
 // quantidade de variaveis locais de cada função
 int contaVarLoc = 0;
 
@@ -96,8 +99,8 @@ programa
             
         }
 
-    // acrescentar as funções
-    // rotinas é uma rotina feita pelo Luiz para chamar as funções
+        // acrescentar as funções
+        // rotinas é uma rotina feita pelo Luiz para chamar as funções
        rotinas
        T_INICIO lista_comandos T_FIM
         { 
@@ -140,7 +143,10 @@ lista_variaveis
           elemTab.esc = escopo;
           elemTab.cat = 'v';
           insereSimbolo(elemTab);
+          // contaVar global
           contaVar++;
+
+          // contaVar local
           if (elemTab.esc == 'L')
             contaVarLoc++;
         }
@@ -152,14 +158,17 @@ lista_variaveis
           elemTab.esc = escopo;
           elemTab.cat = 'v';
           insereSimbolo(elemTab);
+          // contaVar global 
           contaVar++;
+
+          // contaVar local
           if (elemTab.esc == 'L')
             contaVarLoc++;
         }
     ;
 
 rotinas
-    : //nao tem fucoes
+    : //nao tem funcoes
     |
         { fprintf(yyout,"\tDSVS\tL0\n");}
     funcoes
@@ -180,6 +189,7 @@ funcoes
 funcao 
     : T_FUNC tipo T_IDENTIF 
     {
+    // insere as informacoes da funcao na tabela de simbolos
     strcpy(elemTab.id, atoma);
     elemTab.tip = tipo;
     elemTab.cat = 'f';
@@ -190,10 +200,11 @@ funcao
     
     //printa o comando ENSP para inicio
     fprintf(yyout,"L%d\tENSP\n", rotulo);
+
     //quantidade de variaveis globais +1, ja que a funcao é Variavel Global
     contaVar++;
 
-    // guarda o endereco da funcao na variavel posFuncao
+    // guarda o endereco da funcao na variavel posFuncao usando a funcao buscaSimbolo
     posFuncao = buscaSimbolo(elemTab.id);  
 
 
@@ -208,8 +219,12 @@ funcao
     variaveis {
         // ROTINA AJUSTAR VARIAVEIS LOCAIS RET
         //empilha(contaVarLoc, 'n');
+        //printf("\n%d", contaVarLoc);
+
+        // funcao para definir os valores locais 
+        atribuirVarLocal();
+
         // verifica se há variaveis locais e as armazena gerando um AMEM
-        printf("\n%d", contaVarLoc);
         if(contaVarLoc)
             fprintf(yyout,"\tAMEM\t%d\n", contaVarLoc);
     }
@@ -222,12 +237,11 @@ funcao
         /* if(retorno == 0)
             yyerror("A função precisa de retorno"); */
 
-
+        // mera formalidade para printar em qual funcao esta sendo mostrada a tabela de simbolos
         printf("\n--------------------------------------------------------------------------------------------------- ");
         printf("\n                        TABELA DE SIMBOLO COM VALORES LOCAIS DA FUNCAO %d\n ", imprimirFunc);
 
         // mostra a tabela de simbolos
-
         mostraTabela();
 
         //limpa tabela tirando as variaveis e parametros locais
@@ -244,7 +258,7 @@ funcao
 
         // Soma-se 1 na quantidade do imprimir funca caso haja outra funcao
         imprimirFunc++;
-        
+ 
         //limpa a quantidade de parametros para caso haja +1 funcao
         numeroPar = 0;
     }
@@ -258,7 +272,7 @@ parametros
 parametro 
     : tipo T_IDENTIF
     { 
-
+        //salva as informacoes dos parametros na tabela de simbolo
         strcpy(elemTab.id, atoma);
         elemTab.tip = tipo;
         elemTab.esc = 'L';
@@ -289,18 +303,21 @@ retorno
     expressao
     {
 
-    // se a posFuncao esta com valor padrao, nao existe endereco de funcao
+    // se a posFuncao esta com valor padrao, nao existe enderecocontaArg de funcao
     // logo nao existe funcao, e o retorno foi chamado na main    
     if(posFuncao == -1){
         yyerror("Retorno chamado na main!");
     }
 
     //mostrapilha();
+    // usa o desempilha ja feito para comparar o tipo retornado com o tipo da funcao, tratamento de erro.
     int tipo2 = desempilha('t');
     int tipo = tabSimb[posFuncao].tip;
     if (tipo2 != tipo){
+        printf("\t\nEsperava tipo: %d. Encontrou tipo: %d. \n", tipo, tipo2);
         yyerror("incompatibilidade de tipo a variavel");
     }
+    // printa o comando ARZL com o endereço da função
     fprintf(yyout,"\tARZL\t%d\n", tabSimb[posFuncao].end);
     // verifica se há variaveis locais e desaloca memória
     if (contaVarLoc){
@@ -312,7 +329,7 @@ retorno
     }
     // deve gerar (depois da traducao)
     // ARZL (valor de retorno) DMEN (se tiver variavel local)
-    // e um RTSP n
+    // e um RTSP npa
     ;
 
 entrada_saida
@@ -365,7 +382,7 @@ selecao
     : T_SE expressao T_ENTAO 
         { 
             int tip = desempilha('t');
-            if(tip != LOG) yyerror("Incompatibilidade de tipo! 3 ");
+            if(tip != LOG) yyerror("Incompatibilidade de tipo!");
             fprintf(yyout,"\tDSVF\tL%d\n", ++rotulo);
             empilha(rotulo, 'r'); 
         }
@@ -393,7 +410,7 @@ atribuicao
             int tip = desempilha('t');
             int pos = desempilha('p');
             if(tabSimb[pos].tip != tip) 
-                yyerror("Incompatibilidade de tipo! 4 ");
+                yyerror("Incompatibilidade de tipo!");
             if(tabSimb[pos].esc == 'G') 
                 fprintf(yyout,"\tARZG\t%d\n", tabSimb[pos].end); 
             else
@@ -471,12 +488,17 @@ chamada
             }
             empilha(tabSimb[pos].tip, 't');
         }
-    | T_ABRE 
-            {fprintf(yyout, "\tAMEM\t%d\n", 1);}
+    | T_ABRE {   
+            {fprintf(yyout, "\tAMEM\t1\n");}
+            contaArg = 0;
+            }
     lista_argumentos 
     T_FECHA
     {
         int pos = desempilha('p');
+        /* if(contaArg != tabSimb[pos].npa){
+            yyerror("Erro foi passado mais argumentos que parametros da função!");
+        } */
         fprintf(yyout, "\tSVCP\n");
         fprintf(yyout, "\tDSVS\tL%d\n", tabSimb[pos].rot);
         empilha (tabSimb[pos].tip, 't');
@@ -485,11 +507,17 @@ chamada
 
 lista_argumentos
     : 
-    | expressao {
+    | expressao 
+    {
+        // captura pega o tipo desempilhado
         int captura = desempilha('t');
-        //erroOne(captura, posFuncao);
+
+        // soma-se 1 na quantidade de argumentos
+        contaArg++;
+        // tabSimb[posFuncao].par[0] == captura;
     }
     lista_argumentos
+    
     ;
 
 

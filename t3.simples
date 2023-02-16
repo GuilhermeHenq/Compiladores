@@ -1,0 +1,10 @@
+programa teste3
+inteiro x
+func inteiro quadrado (inteiro a)
+inicio
+  retorne a * a
+fimfunc
+inicio 
+  leia x
+  escreva quadrado (quadrado (x))
+fimprograma

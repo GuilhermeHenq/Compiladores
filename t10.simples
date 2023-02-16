@@ -1,0 +1,8 @@
+programa teste10
+  func inteiro foo (inteiro a)
+  inicio
+     retorne a
+  fimfunc
+inicio
+   escreva foo (100 200)
+fimprograma

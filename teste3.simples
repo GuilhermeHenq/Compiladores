@@ -1,6 +1,6 @@
 programa teste3
 inteiro x y
-func inteiro maior (inteiro a inteiro b)
+func logico maior (inteiro a inteiro b)
 logico c
 inicio
     c <- a > b

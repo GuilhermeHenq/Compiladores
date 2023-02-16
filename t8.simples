@@ -1,0 +1,15 @@
+programa teste8
+   inteiro a b
+   func logico teste (inteiro a inteiro b)
+   inicio
+       retorne a > b
+   fimfunc
+
+inicio
+   a <- 10
+   b <- 5
+   enquanto teste(a b) faca
+       escreva a
+       a <- a - 1
+   fimenquanto
+fimprograma 

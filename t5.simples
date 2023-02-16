@@ -1,0 +1,23 @@
+programa teste5
+   inteiro x
+   func inteiro foo (inteiro a inteiro b)
+   inteiro conta
+   inicio 
+      conta <- 0
+      enquanto conta < b faca
+            a <- a + a
+            conta <- conta + 1
+      fimenquanto
+      retorne a 
+    fimfunc
+    func inteiro baa (inteiro a)
+    inicio  
+        retorne a + 1
+    fimfunc
+
+inicio
+   escreva foo (3 baa (4))
+   escreva baa (foo (3 2))
+   escreva foo (baa (1) 3)
+   escreva foo (foo (3 2) 1)
+fimprograma
