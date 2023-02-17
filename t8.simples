@@ -1,5 +1,5 @@
 programa teste8
-   inteiro a b
+   inteiro a b 
    func logico teste (inteiro a inteiro b)
    inicio
        retorne a > b
