@@ -73,7 +73,7 @@ char * format_params(struct elemTabSimbolos simbo)
           break;
       }
       if (i < simbo.npa - 1) {
-        strcat(formatted_params, " >>>> ");
+        strcat(formatted_params, " >>>>");
       }
     }
   return formatted_params;
@@ -103,9 +103,9 @@ void arrumarPam(int pos, int npa){
 //     } 
 //   }
 // }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void updateParams(int count) {
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* void updateParams(int count) {
   for (int i = TAM_TAB - 1; i >= 0; i--) {
     if (tabSimb[i].cat == 'f') {
       int params = count;
@@ -119,7 +119,7 @@ void updateParams(int count) {
       } 
     } 
   }
-}
+} */
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int buscaSimbolo(char *id)
 {
@@ -135,11 +135,11 @@ int buscaSimbolo(char *id)
     return i;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void erroOne(int captura, int posFuncao) { 
-            if(tabSimb[posFuncao].par[0] != captura){
-              yyerror("erro de blabla");
-            }
-}
+// void erroOne(int captura, int contaArg) { 
+//             if(tabSimb[posFuncao].par[0] != captura){
+//               yyerror("erro de blabla");
+//             }
+// }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void insereSimbolo (struct elemTabSimbolos elem) {
     int i; 
@@ -148,7 +148,7 @@ void insereSimbolo (struct elemTabSimbolos elem) {
         yyerror("Tabela de Simbolos Cheia!");
     for (i = posTab - 1; strcmp(tabSimb[i].id, elem.id) && i >= 0; i--)
         ;
-    if (i != -1) {
+    if (i != -1 && elem.cat != 'p') {
         char msg[200];
         sprintf(msg, "Identificador [%s] duplicado!", elem.id);
         yyerror(msg);
@@ -245,3 +245,12 @@ void mostrapilha()
     printf("]\n");
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void tratarTiposArgumentos(int pos, int *vetorTipos){
+   for(int i=0;i < tabSimb[pos].npa; i++){
+      if(vetorTipos[i] != tabSimb[pos].par[i]){  
+        printf("\t\nErro, o tipo do argumento é %d , e o tipo do parametro é %d.\n", vetorTipos[i], tabSimb[pos].par[i]);
+        yyerror("\t\nTipos de argumentos e parametros imcompativeis!\n");
+      }
+   }  
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 

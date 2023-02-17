@@ -30,11 +30,21 @@ int contaVarLoc = 0;
 int posFuncao = -1;
 
 //quantidade de funcoes do programa
-int funcoesQuantidade;
+int funcoesQuantidade = 0;
 
 //apenas para printar de qual funcao é a tabela de simbolos, Pura estética.
 int imprimirFunc = 1;
 
+// vetor para armazenar os tipos desempilhados e verificar 
+int vetorTipos[MAX_PAR];
+
+// auxVetor starta para fazer o for
+int auxVetor = 0;
+
+// variavel para ajudar a verificar a obrigatoriedade de retorno
+int retorneConta = 0;
+
+int teste3 = 0;
 %}
 
 %token T_PROGRAMA
@@ -233,10 +243,12 @@ funcao
     }
     
      lista_comandos T_FIMFUNC
-    { 
-        /* if(retorno == 0)
-            yyerror("A função precisa de retorno"); */
+    {   
+        // usa uma variavel para verificar se a funcao tem retorno, e logo em seguida zera a mesma para possivel existencia de outras funcoes.
+        if(retorneConta == 0){  
+            yyerror("A função precisa de retorno"); }
 
+        retorneConta = 0;
         // mera formalidade para printar em qual funcao esta sendo mostrada a tabela de simbolos
         printf("\n--------------------------------------------------------------------------------------------------- ");
         printf("\n                        TABELA DE SIMBOLO COM VALORES LOCAIS DA FUNCAO %d\n ", imprimirFunc);
@@ -254,6 +266,7 @@ funcao
         escopo = 'G';
 
         // soma-se 1 na quantidade de funcoes do programa
+        // !!!!!!!!!!!tratar erro de funcoes definidas e nao chamadas.!!!!!!!!!!!!!
         funcoesQuantidade++;  
 
         // Soma-se 1 na quantidade do imprimir funca caso haja outra funcao
@@ -261,6 +274,10 @@ funcao
  
         //limpa a quantidade de parametros para caso haja +1 funcao
         numeroPar = 0;
+        
+        // zera a quantidade de variaveis locais visto que acabou a funcao
+        contaVarLoc = 0;
+
     }
     ;
 
@@ -303,7 +320,7 @@ retorno
     expressao
     {
 
-    // se a posFuncao esta com valor padrao, nao existe enderecocontaArg de funcao
+    // se a posFuncao esta com valor padrao, nao existe endereco de funcao
     // logo nao existe funcao, e o retorno foi chamado na main    
     if(posFuncao == -1){
         yyerror("Retorno chamado na main!");
@@ -325,7 +342,9 @@ retorno
     }
     // desaloca memoria com o numero de parametros da func
     fprintf(yyout,"\tRTSP\t%d\n", tabSimb[posFuncao].npa);
-    
+
+    //soma-se na quantidade de retorno
+    retorneConta++;
     }
     // deve gerar (depois da traducao)
     // ARZL (valor de retorno) DMEN (se tiver variavel local)
@@ -494,14 +513,23 @@ chamada
             }
     lista_argumentos 
     T_FECHA
-    {
+    {   
         int pos = desempilha('p');
-        /* if(contaArg != tabSimb[pos].npa){
-            yyerror("Erro foi passado mais argumentos que parametros da função!");
-        } */
+        // chama a funcao do utils cujo objetivo é verificar os tipos dos argumentos com os tipos dos parametros da funcao
+        tratarTiposArgumentos(pos, vetorTipos);
+        // compara a quantidade de argumentos com a quantidade de parametros
+        if(contaArg != tabSimb[pos].npa){
+            printf("\t\nErro, foi passado %d argumentos, e a funcao possui %d parametros\n", contaArg, tabSimb[pos].npa);
+            yyerror("ERROR!\n");
+        }
+        // salva o contador de programa e desvia sempre pro rotulo logo em seguida
         fprintf(yyout, "\tSVCP\n");
         fprintf(yyout, "\tDSVS\tL%d\n", tabSimb[pos].rot);
         empilha (tabSimb[pos].tip, 't');
+        if(teste3 < 1){
+        contaArg = 0;  
+        }
+        teste3++;
     }
     ;
 
@@ -509,12 +537,17 @@ lista_argumentos
     : 
     | expressao 
     {
-        // captura pega o tipo desempilhado
-        int captura = desempilha('t');
+        //erroOne(captura, contaArg);
+
+        // vetor tipos recebe o tipo desempilhado
+        vetorTipos[auxVetor] = desempilha('t');
 
         // soma-se 1 na quantidade de argumentos
         contaArg++;
-        // tabSimb[posFuncao].par[0] == captura;
+
+        // soma-se 1 no auxVetor
+        auxVetor++;
+
     }
     lista_argumentos
     

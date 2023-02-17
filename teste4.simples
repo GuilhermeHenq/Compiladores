@@ -2,7 +2,7 @@ programa teste4
 inteiro x
 func inteiro quad (inteiro a)
 inicio
-    retorne a * a
+    a <- a * a
 fimfunc
 inicio
     leia x
