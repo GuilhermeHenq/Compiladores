@@ -44,7 +44,6 @@ int auxVetor = 0;
 // variavel para ajudar a verificar a obrigatoriedade de retorno
 int retorneConta = 0;
 
-int teste3 = 0;
 %}
 
 %token T_PROGRAMA
@@ -331,8 +330,9 @@ retorno
     int tipo2 = desempilha('t');
     int tipo = tabSimb[posFuncao].tip;
     if (tipo2 != tipo){
-        printf("\t\nEsperava tipo: %d. Encontrou tipo: %d. \n", tipo, tipo2);
-        yyerror("incompatibilidade de tipo a variavel");
+        char msg1[300];
+        sprintf(msg1, "Esperava tipo: %d. Encontrou tipo: %d. \n", tipo, tipo2);
+        yyerror(msg1);
     }
     // printa o comando ARZL com o endereço da função
     fprintf(yyout,"\tARZL\t%d\n", tabSimb[posFuncao].end);
@@ -519,17 +519,17 @@ chamada
         tratarTiposArgumentos(pos, vetorTipos);
         // compara a quantidade de argumentos com a quantidade de parametros
         if(contaArg != tabSimb[pos].npa){
-            printf("\t\nErro, foi passado %d argumentos, e a funcao possui %d parametros\n", contaArg, tabSimb[pos].npa);
-            yyerror("ERROR!\n");
+            char msg2[300];
+            sprintf(msg2, "Erro, foi passado %d argumentos, e a funcao possui %d parametros\n", contaArg, tabSimb[pos].npa);
+            yyerror(msg2);
         }
         // salva o contador de programa e desvia sempre pro rotulo logo em seguida
         fprintf(yyout, "\tSVCP\n");
         fprintf(yyout, "\tDSVS\tL%d\n", tabSimb[pos].rot);
         empilha (tabSimb[pos].tip, 't');
-        if(teste3 < 1){
+        //if(teste3 < 1){
         contaArg = 0;  
-        }
-        teste3++;
+        //}
     }
     ;
 
@@ -543,13 +543,17 @@ lista_argumentos
         vetorTipos[auxVetor] = desempilha('t');
 
         // soma-se 1 na quantidade de argumentos
-        contaArg++;
+        //contaArg++;
 
         // soma-se 1 no auxVetor
         auxVetor++;
 
     }
-    lista_argumentos
+    lista_argumentos{
+
+        // soma-se 1 na quantidade de argumentos
+        contaArg++;
+    }
     
     ;
 
