@@ -101,7 +101,7 @@ int vetorTipos[MAX_PAR];
 // auxVetor starta para fazer o for
 int auxVetor = 0;
 
-// variavel para ajudar a verificar a obrigatoriedade de retorno
+// variavel para ajudar a verificar a obrigatoriedade de retorno 
 int retorneConta = 0;
 
 
